@@ -296,8 +296,8 @@
                   <div class="product__accordion" id="ProductAccordion--reviews-container">
                     <button class="product__accordion__title" aria-controls="ProductAccordion--{{ section.id }}-{{ block.id }}" data-collapsible-trigger>
                       {{- 'products.general.reviews' | t -}}
-                      {%- render 'icon-toggle-plus' -%}
-                      {%- render 'icon-toggle-minus' -%}
+                      {%- render 'icon-chevron-down' -%}
+                      {%- render 'icon-chevron-up' -%}
                     </button>
                     <div class="product__accordion__content" id="ProductAccordion--{{ section.id }}-{{ block.id }}" data-collapsible-container>
                       <div class="product__accordion__inner" data-collapsible-content>
@@ -313,7 +313,21 @@
                   {{ app_code }}
                 </div>
               {%- endif -%}
-
+            {%- when 'payments' -%}
+            <div class="product__payment aos-init aos-animate"
+            {% if animations_enabled %}
+        data-aos="fade"
+        data-aos-anchor="{{ animation_anchor }}"
+        data-aos-delay="{{ animation_delay }}"
+        {%- assign animation_delay = animation_delay | plus: 150 -%}
+      {% endif %}>
+              <div class="product__payment_title">{{ block.settings.payment_title }}</div>
+              <div class="product__payment_list">
+                {%- render 'footer-payment' -%}
+              </div>
+            </div>
+            
+            
             {%- when 'title' -%}
               <div class="product__block product__title-and-price"
                 {% if animations_enabled %}
@@ -756,43 +770,26 @@
 
   {%- capture quantity_selector -%}
     <div class="select__fieldset">
-      <span class="select__label" id="{{ unique }}-select-quantity-label">{{ 'products.product.quantity' | t }}</span>
+  <span class="select__label" id="{{ section.id }}-select-quantity-label">{{ 'products.product.quantity' | t }}</span>
 
-      <div class="select-popout select-popout--small" data-popout data-popout-prevent="true">
-        <button type="button" class="select-popout__toggle{% if variants_style == 'boxes' %} select-popout__toggle--qty{% endif %}" aria-expanded="false" aria-controls="{{ unique }}-select-quantity" aria-labelledby="{{ unique }}-select-quantity-label" data-popout-toggle data-popout-quantity>
-          <span class="select-popout__value" data-popout-text data-quantity-select>1</span>
-          {%- render 'icon-select' -%}
-        </button>
+  <div class="select-popout" data-popout data-popout-prevent="true">
+    <div class="quantity-selector" data-quantity-holder>
+      <label for="product-quantity-buttons-{{ section.id }}" class="label-hidden">{{ 'products.product.quantity' | t }}</label>
 
-        <div id="{{ unique }}-select-quantity" class="select-popout__list" data-popout-list>
-          <ul class="select-popout__list__scroll">
-            {%- for idx in (1..10) -%}
-              <li class="select-popout__item{% if forloop.index == 1 %} select-popout__item--current{% endif %}">
-                <a class="select-popout__option" href="#" {% if forloop.index == 1 %}aria-current="true"{% endif %} data-value="{{ forloop.index }}" data-popout-option>
-                  <span>{{ forloop.index }} {% if forloop.last %}+{% endif %}</span>
-                </a>
-              </li>
-            {%- endfor -%}
-          </ul>
-        </div>
+      <button type="button" class="quantity__btn quantity__btn--decrease" data-quantity-minus data-quantity-button tabindex="0" title="{{ 'general.accessibility.decrease' | t }} - {{ product.title | strip_html -}}">
+        <span class="visually-hidden">{{ 'general.accessibility.decrease' | t }}</span>
+        {%- render 'icon-toggle-minus' -%}
+      </button>
 
-        <div class="quantity-selector" data-quantity-holder>
-          <label for="product-quantity-buttons-{{ section.id }}" class="label-hidden">{{ 'products.product.quantity' | t }}</label>
+      <input id="product-quantity-buttons-{{ section.id }}" data-popout-input type="number" class="quantity__selector quantity__input" value="1" min="1" aria-label="quantity" autocomplete="off" name="quantity" data-quantity-field title="{{- 'products.product.quantity' | t }} - {{ product.title | strip_html -}}" pattern="[0-9]*" />
 
-          <button type="button" class="quantity__btn quantity__btn--decrease" data-quantity-minus data-quantity-button tabindex="0" title="{{ 'general.accessibility.decrease' | t }} - {{ product.title | strip_html -}}">
-            <span class="visually-hidden">{{ 'general.accessibility.decrease' | t }}</span>
-            {%- render 'icon-toggle-minus' -%}
-          </button>
-
-          <input id="product-quantity-buttons-{{ section.id }}" data-popout-input type="number" class="quantity__selector quantity__input" value="1" min="1" aria-label="quantity" autocomplete="off" name="quantity" data-quantity-field title="{{- 'products.product.quantity' | t }} - {{ product.title | strip_html -}}" pattern="[0-9]*" />
-
-          <button type="button" class="quantity__btn quantity__btn--increase" data-quantity-plus data-quantity-button tabindex="0" title="{{- 'general.accessibility.increase' | t }} - {{ product.title | strip_html -}}">
-            <span class="visually-hidden">{{ 'general.accessibility.increase' | t }}</span>
-            {%- render 'icon-toggle-plus' -%}
-          </button>
-        </div>
-      </div>
+      <button type="button" class="quantity__btn quantity__btn--increase" data-quantity-plus data-quantity-button tabindex="0" title="{{- 'general.accessibility.increase' | t }} - {{ product.title | strip_html -}}">
+        <span class="visually-hidden">{{ 'general.accessibility.increase' | t }}</span>
+        {%- render 'icon-toggle-plus' -%}
+      </button>
     </div>
+  </div>
+</div>
   {%- endcapture -%}
 
   {%- capture form_fields -%}
@@ -952,7 +949,7 @@
                         value="{{ value | escape_once }}"
                         id="{{ input_id }}"
                         {% if value == current_value %}checked{% endif %}>
-                      <label for="{{ input_id }}" class="swatch__label" data-swatch="{{ value | escape_once }}" data-tooltip="{{ value | escape_once }}" data-swatch-variant="{{ current_option_variants_id }}">
+                      <label for="{{ input_id }}" style="background-color: {{ value | escape_once }}" class="swatch__label" data-swatch="{{ value | escape_once }}" data-tooltip="{{ value | escape_once }}" data-swatch-variant="{{ current_option_variants_id }}">
                         <span class="visually-hidden">{{ value | escape_once }}</span>
                         {%- if settings.color_swatches_product_style == 'circle' -%}
                           <span class="icon icon-check"></span>
@@ -1202,7 +1199,7 @@
 
 <div class="product__form product__form--onboarding">
   <div class="product__selectors">
-    <div class="{{ selector_wrapper_class }}"
+    <div class="{{ selector_wrapper_class }} {{ selector_wrapper_class }}"
       data-option-position="1"
       {% if animations_enabled %}
         data-aos="fade-up"
@@ -1235,7 +1232,7 @@
                   value="{{ value | escape_once }}"
                   id="option-{{ value }}-0-{{ section.id }}"
                   {% if forloop.index == 1 %}checked{% endif %}>
-                <label for="option-{{ value }}-0-{{ section.id }}" class="radio__label">
+                <label for="option-{{ value }}-0-{{ section.id }}" class="radio__label" style="--swatch: {{ value | escape_once }}">
                   <span>{{ value | escape_once }}</span>
                 </label>
               </span>
@@ -2562,7 +2559,7 @@
                         value="{{ value | escape_once }}"
                         id="{{ input_id }}"
                         {% if value == current_value %}checked{% endif %}>
-                      <label for="{{ input_id }}" class="swatch__label" data-swatch="{{ value | escape_once }}" data-tooltip="{{ value | escape_once | capitalize }}" data-swatch-variant="{{ current_option_variants_id }}">
+                      <label for="{{ input_id }}" style="--swatch: {{ value | escape_once }}" class="swatch__label" data-swatch="{{ value | escape_once }}" data-tooltip="{{ value | escape_once | capitalize }}" data-swatch-variant="{{ current_option_variants_id }}">
                         <span class="visually-hidden">{{ value | escape_once }}</span>
                         {%- if settings.color_swatches_product_style == 'circle' -%}
                           <span class="icon icon-check"></span>

@@ -43,6 +43,9 @@
     }
   {%- endif -%}
   .footer-block { --items-count: {{ blocks_size }}; }
+  .footer-link {
+      --text-alpha-80: {{ color_text | color_modify: 'alpha', 0.80 }};
+  }
 {%- endstyle -%}
 
 <footer id="SiteFooter"
@@ -214,7 +217,59 @@
                 {{- footer_text -}}
               </div>
             </div>
+          {%- when 'contact' -%}
+            {%- assign title = block.settings.contact_title -%}
+            {%- assign text = block.settings.contact_text -%}
+            {%- assign contact_links = linklists[block.settings.contact_links].links -%}
+
+            <div class="footer-block footer-block--text"
+              {% if animations_enabled %}
+                data-aos="fade-up"
+                data-aos-anchor="{{ animation_anchor }}"
+                data-aos-delay="{{ animation_delay }}"
+                {%- assign animation_delay = animation_delay | plus: 150 -%}
+              {% endif %}
+              {{ block.shopify_attributes }}>
+              {%- if title != blank -%}
+                <p class="footer-title h5">{{ title }}</p>
+              {%- endif -%}
+
+              <div class="rte">
+                {{- text -}}
+              </div>
+              {%- if contact_links != empty -%}
+                <div class="social-links__wrapper"{% if title != blank %} id="FooterMenu--{{ title | handle }}-{{ forloop.index0 }}" data-collapsible-container-mobile{% endif %}>
+                  <ul class="social-links"{% if title != blank %} data-collapsible-content{% endif %}>
+                    {%- for link in contact_links -%}
+                        {%- case link.title -%}
+                          {%- when 'facebook' -%}
+                            <li><a class="social-link" href="{{ link.url }}" target="_blank">
+                              {%- render 'facebook-icon' -%}
+                            </a></li>
+                          {%- when 'tiktok' -%}
+                            <li><a class="social-link" href="{{ link.url }}" target="_blank">
+                              {%- render 'tiktok-icon' -%}
+                            </a></li>
+                          {%- when 'pinterest' -%}
+                            <li><a class="social-link" href="{{ link.url }}" target="_blank">
+                              {%- render 'pinterest-icon' -%}
+                            </a></li>
+                          {%- when 'youtube' -%}
+                            <li><a class="social-link" href="{{ link.url }}" target="_blank">
+                              {%- render 'youtube-icon' -%}
+                            </a></li>
+                          {%- when 'instagram' -%}
+                            <li><a class="social-link" href="{{ link.url }}" target="_blank">
+                              {%- render 'instagram-icon' -%}
+                            </a></li>
+                        {%- endcase -%}
+                    {%- endfor -%}
+                  </ul>
+                </div>
+              {%- endif -%}
+            </div>
         {%- endcase -%}
+        
       {%- endfor -%}
     </div>
   </div>
@@ -231,12 +286,12 @@
     {%- if section.settings.show_social_links -%}
       {%- render 'footer-social', show_follow_on_shop: show_follow_on_shop -%}
     {%- endif -%}
-
-    {%- render 'footer-copyright' -%}
-
+    
     {%- if section.settings.show_payment_icons -%}
       {%- render 'footer-payment' -%}
     {%- endif -%}
+
+    {%- render 'footer-copyright' -%}
   </div>
 </footer>
 
@@ -472,6 +527,30 @@
           "id": "text",
           "label": "Text",
           "default": "<p>Stay up to date with the new collections, products and exclusive offers.</p>"
+        }
+      ]
+    },
+    {
+      "type": "contact",
+      "name": "Socials",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "contact_title",
+          "label": "Heading",
+          "default": "Socials"
+        },
+        {
+          "type": "richtext",
+          "id": "contact_text",
+          "label": "Text",
+         "default": "<p><strong>Email:</strong> support@reelscustom.com<br/><strong>Support:</strong> +84359711094<br/><strong>Address :</strong> 5 Phan Lang 5, An Khe Ward, Thanh Khe District, Da Nang, Viet Nam, 550000</p>"
+        },
+        {
+          "type": "link_list",
+          "id": "contact_links",
+          "label": "Social links"
         }
       ]
     }

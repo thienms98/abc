@@ -46,8 +46,6 @@
       assign section_height_class = 'six-fifty-height'
     when '550'
       assign section_height_class = 'five-fifty-height'
-    when '500'
-      assign section_height_class = 'five-hundred-height'
     when '450'
       assign section_height_class = 'four-fifty-height'
     when '350'
@@ -73,12 +71,10 @@
   }
 {%- endstyle -%}
 
-<section
-  id="{{ section_id }}"
+<section id="{{ section_id }}"
   class="mosaic{{ section_class }} section-padding{% if bg_color_secondary %} bg-secondary{% endif %}"
   data-section-id="{{ section.id }}"
-  data-section-type="mosaic"
->
+  data-section-type="mosaic">
   <div class="mosaic__wrapper {{ section_width }}{% if section_width != 'wrapper--full' %} wrapper--no-full{% endif %}">
     {%- if block_count > 0 -%}
       <div class="mosaic__grid" data-grid>
@@ -104,7 +100,7 @@
             assign animation_delay = forloop.index
             assign block_id = 'MosaicItem--' | append: block.id
             assign block_selector_id = '#' | append: block_id
-            assign card = block.settings.card
+
             case text_position
               when 'left'
                 assign text_position_class = 'mosaic__item__content--left'
@@ -116,8 +112,6 @@
                 assign text_position_class = 'mosaic__item__content--bottom-left'
               when 'bottom-right'
                 assign text_position_class = 'mosaic__item__content--bottom-right'
-              when 'bottom-center'
-                assign text_position_class = 'mosaic__item__content--bottom-center'
               when 'top-left'
                 assign text_position_class = 'mosaic__item__content--top-left'
               when 'top-right'
@@ -175,6 +169,9 @@
 
               when 'image'
                 assign image = block.settings.image
+
+              when 'text_list'
+                assign list_content = block.settings.list_content
             endcase
 
             if button_1_link != blank and button_2_text == blank
@@ -200,7 +197,7 @@
 
           {%- capture item_attributes -%}
             id="{{ block_id }}"
-            class="mosaic__item mosaic__item--{{ forloop.index }} {{ text_color }}{% if has_block_link %} mosaic__item--block-link{% endif %} {{ section_height_class }} {% if card %} card{% endif %}"
+            class="mosaic__item mosaic__item--{{ forloop.index }} {{ text_color }}{% if has_block_link %} mosaic__item--block-link{% endif %} {{ section_height_class }}"
             data-item
             {% if animations_enabled %}
               data-aos="fade"
@@ -234,71 +231,82 @@
             </div>
           {%- endcapture -%}
 
-          <div {{ item_attributes }}>
-            <div class="mosaic__item__inner">
-              {%- if has_block_link -%}
-                <a href="{{ button_1_link }}" class="mosaic__item__image__link">
-              {%- endif -%}
-
-              {%- if has_image -%}
-                {{ item_image }}
-              {%- endif -%}
-
-              <div class="mosaic__item__content {{ text_position_class }}{% if button_1_link == blank %} mosaic__item__content--nolink{% endif %}">
-                {%- if subheading != blank -%}
-                  <p class="mosaic__item__subheading subheading-text">{{ subheading }}</p>
-                {%- endif -%}
-
-                {%- if heading != blank -%}
-                  <h3 class="mosaic__item__heading{% if has_block_link %} mosaic__item__heading--underline{% endif %} h2">
-                    {{ heading }}
-                  </h3>
-                {%- endif -%}
-
-                {%- if text != blank -%}
-                  <div class="mosaic__item__text p">
-                    {{- text -}}
+          {%- if list_content != blank -%}
+            <div {{ item_attributes }}>
+              <div class="mosaic__item__inner mosaic__list_item__inner">
+                <div class="mosaic__item__content mosaic__list_item__content {{ text_position_class }}{% if button_1_link == blank %} mosaic__list_item__content--nolink{% endif %}">
+                  {%- if heading != blank -%}
+                    <h3 class="mosaic__list_item__heading{% if has_block_link %} mosaic__list_item__heading--underline{% endif %} h2">{{ heading }}</h3>
+                  {%- endif -%}
+            
+                  <div class="mosaic__list_item__content p">
+                    {{- list_content -}}
                   </div>
+  
+                  {%- if text != blank -%}
+                    <div class="mosaic__list_item__text p">
+                      {{- text -}}
+                    </div>
+                  {%- endif -%}
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <div {{ item_attributes }}>
+              <div class="mosaic__item__inner">
+                {%- if has_block_link -%}
+                  <a href="{{ button_1_link }}" class="mosaic__item__image__link">
                 {%- endif -%}
-
-                {%- if price != blank -%}
-                  <div class="mosaic__item__price p">
-                    {{- price -}}
-                  </div>
+  
+                {%- if has_image -%}
+                  {{ item_image }}
                 {%- endif -%}
-
-                {%- if button_1_text != blank or button_2_text != blank -%}
-                  <div class="mosaic__item__buttons">
-                    {%- if button_1_text != blank and has_block_link == false -%}
-                      <a
-                        href="{{ button_1_link }}"
-                        class="mosaic__item__btn btn {{ button_1_style }} {{ button_1_size }} {{ button_1_color }}"
-                      >
-                        {{- button_1_text -}}
-                      </a>
-                    {%- elsif button_1_text != blank -%}
-                      <span class="mosaic__item__btn btn {{ button_1_style }} {{ button_1_size }} {{ button_1_color }}">
-                        {{- button_1_text -}}
-                      </span>
-                    {%- endif -%}
-
-                    {%- if button_2_text != blank -%}
-                      <a
-                        href="{{ button_2_link }}"
-                        class="mosaic__item__btn btn {{ button_2_style }} {{ button_2_size }} {{ button_2_color }}"
-                      >
-                        {{- button_2_text -}}
-                      </a>
-                    {%- endif -%}
-                  </div>
+  
+                <div class="mosaic__item__content {{ text_position_class }}{% if button_1_link == blank %} mosaic__item__content--nolink{% endif %}">
+  
+                  {%- if subheading != blank -%}
+                    <p class="mosaic__item__subheading subheading-text">{{ subheading }}</p>
+                  {%- endif -%}
+  
+                  {%- if heading != blank -%}
+                    <h3 class="mosaic__item__heading{% if has_block_link %} mosaic__item__heading--underline{% endif %} h2">{{ heading }}</h3>
+                  {%- endif -%}
+  
+                  {%- if text != blank -%}
+                    <div class="mosaic__item__text p">
+                      {{- text -}}
+                    </div>
+                  {%- endif -%}
+  
+                  {%- if price != blank -%}
+                    <div class="mosaic__item__price p">
+                      {{- price -}}
+                    </div>
+                  {%- endif -%}
+  
+                  {%- if button_1_text != blank or button_2_text != blank -%}
+                    <div class="mosaic__item__buttons">
+                      {%- if button_1_text != blank and has_block_link == false -%}
+                        <a href="{{ button_1_link }}" class="mosaic__item__btn btn {{ button_1_style }} {{ button_1_size }} {{ button_1_color }}">{{ button_1_text }}</a>
+                      {%- elsif button_1_text != blank -%}
+                        <span class="mosaic__item__btn btn {{ button_1_style }} {{ button_1_size }} {{ button_1_color }}">{{ button_1_text }}</span>
+                      {%- endif -%}
+  
+                      {%- if button_2_text != blank -%}
+                        <a href="{{ button_2_link }}" class="mosaic__item__btn btn {{ button_2_style }} {{ button_2_size }} {{ button_2_color }}">{{ button_2_text }}</a>
+                      {%- endif -%}
+                    </div>
+                  {%- endif -%}
+                </div>
+  
+                {%- if has_block_link -%}
+                  </a>
                 {%- endif -%}
               </div>
-
-              {%- if has_block_link -%}
-                </a>
-              {%- endif -%}
             </div>
-          </div>
+          {%- endif -%}
+          
+          
         {%- endfor -%}
       </div>
     {%- else -%}

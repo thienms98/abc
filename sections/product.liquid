@@ -1,6 +1,13 @@
 {%- comment -%} /sections/product-template {%- endcomment -%}
 {%- liquid
   assign bg_color = section.settings.bg_color
+  assign bg_detail_color = section.settings.bg_detail_color
+  assign text_detail_color = section.settings.text_detail_color
+  assign active_button_bg = section.settings.active_button_bg
+  assign active_button_text = section.settings.active_button_text
+  assign default_button_bg = section.settings.default_button_bg
+  assign default_button_text = section.settings.default_button_text
+  
   assign section_width = section.settings.width
 -%}
 
@@ -13,6 +20,14 @@
   {%- if bg_color != 'rgba(0,0,0,0)' and bg_color != '' -%}
     #ProductTemplate--{{ section.id }} { background: {{ bg_color }}; }
     .shop-pay-terms { --payment-terms-background-color: {{ bg_color }} }
+  {%- endif -%}
+  {%- if bg_detail_color != 'rgba(0,0,0,0)' and bg_detail_color != '' -%}
+    .product-single__details { background: {{ bg_detail_color }}; }
+  {%- endif -%}
+  {%- if text_detail_color != 'rgba(0,0,0,0)' and text_detail_color != '' -%}
+    /* .product-single__details { background: {{ bg_detail_color }}; } */
+    .select__label, .radio__legend__label { color: {{text_detail_color}}; font-weight: 700; }
+    .product__accordions {--text: {{ text_detail_color }}}
   {%- endif -%}
 {%- endstyle -%}
 
@@ -150,6 +165,16 @@
       "type": "color",
       "id": "bg_color",
       "label": "Background"
+    },
+    {
+      "type": "color",
+      "id": "bg_detail_color",
+      "label": "Background detail"
+    },
+    {
+      "type": "color",
+      "id": "text_detail_color",
+      "label": "Detail text color"
     },
     {
       "type": "header",
@@ -449,7 +474,7 @@
           "id": "text",
           "label": "Text",
           "default": "Share",
-          "info": "If you include a link in social media posts, the page\’s featured image will be shown as the preview image.[Learn more](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)"
+          "info": "If you include a link in social media posts, the page's featured image will be shown as the preview image.[Learn more](https://help.shopify.com/en/manual/online-store/images/showing-social-media-thumbnail-images)"
         },
         {
           "type": "paragraph",
@@ -1129,6 +1154,18 @@
           "unit": "px",
           "label": "Padding bottom",
           "default": 20
+        }
+      ]
+    },
+    {
+      "type": "payments",
+      "name": "Payments",
+      "settings": [
+        {
+          "type": "text",
+          "id": "payment_title",
+          "label": "Title",
+          "default": "Guaranteed safe & secure checkout via"
         }
       ]
     },

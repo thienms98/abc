@@ -19,7 +19,7 @@
   assign icons_width = section.settings.icons_width
   assign has_subheading = false
   assign blocks_size = section.blocks.size
-  assign card = section.settings.card
+
   assign flex = false
   if columns > blocks_size
     assign flex = true
@@ -92,40 +92,31 @@
   }
 {%- endstyle -%}
 
-<section
-  id="IconsRow--{{ section.id }}"
-  class="section-padding icons-row{%- render 'button-fallback-classes', primary_color: button_color, section_bg_color: bg_color -%}"
-  data-section-id="{{ section.id }}"
-  data-section-type="icons-row"
->
-  <div class="wrapper {% if card %} card{% endif %}">
+<section id="IconsRow--{{ section.id }}" class="section-padding icons-row{%- render 'button-fallback-classes', primary_color: button_color, section_bg_color: bg_color -%}" data-section-id="{{ section.id }}" data-section-type="icons-row">
+  <div class="wrapper">
     <div class="icons-row__wrapper{% if single_block %} icons-row__wrapper--single-block-center{% endif %} text-{{ alignment }}">
       {%- if heading != blank or subheading != blank -%}
         <div class="icons-row__headings">
           {%- if heading != blank -%}
-            <h2
-              class="icons-row__heading"
+            <h2 class="icons-row__heading"
               {% if animations_enabled %}
                 data-aos="fade-up"
                 data-aos-anchor="{{ animation_anchor }}"
                 data-aos-delay="{{ animation_delay }}"
                 {%- assign animation_delay = animation_delay | plus: 150 -%}
-              {% endif %}
-            >
+              {% endif %}>
               {{- heading | escape -}}
             </h2>
           {%- endif -%}
 
           {%- if subheading != blank -%}
-            <div
-              class="icons-row__subheading"
-              {% if animations_enabled %}
-                data-aos="fade-up"
-                data-aos-anchor="{{ animation_anchor }}"
-                data-aos-delay="{{ animation_delay }}"
-                {%- assign animation_delay = animation_delay | plus: 150 -%}
-              {% endif %}
-            >
+            <div class="icons-row__subheading"
+            {% if animations_enabled %}
+              data-aos="fade-up"
+              data-aos-anchor="{{ animation_anchor }}"
+              data-aos-delay="{{ animation_delay }}"
+              {%- assign animation_delay = animation_delay | plus: 150 -%}
+            {% endif %}>
               {{- subheading -}}
             </div>
           {%- endif -%}
@@ -133,10 +124,7 @@
       {%- endif -%}
 
       {%- if blocks_size > 0 -%}
-        <div
-          class="icons-row__slider{{ mobile_class }} text-{{ alignment }}{% if flex %} icons-row__slider--flex{% endif %} items--{{ columns }}"
-          data-slider
-        >
+        <div class="icons-row__slider{{ mobile_class }} text-{{ alignment }}{% if flex %} icons-row__slider--flex{% endif %} items--{{ columns }}" data-slider>
           {%- for block in section.blocks -%}
             {%- liquid
               assign title = block.settings.title
@@ -145,16 +133,15 @@
               assign icon = block.settings.icon_name
             -%}
 
-            <div
-              class="icons-row__item{{ mobile_item_class }}{% if boxes %} icons-row__item--box{% endif %}{% if has_subheading %} icons-row__item--center{% endif %}"
+            <div class="icons-row__item{{ mobile_item_class }}{% if boxes %} icons-row__item--box{% endif %}{% if has_subheading %} icons-row__item--center{% endif %}"
               {{ block.shopify_attributes }}
               {% if animations_enabled %}
                 data-aos="fade-up"
                 data-aos-anchor="{{ animation_anchor }}"
                 data-aos-delay="{{ animation_delay }}"
                 {%- assign animation_delay = animation_delay | plus: 150 -%}
-              {% endif %}
-            >
+              {% endif %}>
+
               {%- if image != blank or icon != 'none' -%}
                 <div class="icons-row__icon icon-stroke">
                   {%- if image != blank -%}
@@ -184,18 +171,13 @@
       {%- endif -%}
 
       {%- if button_text != blank -%}
-        <div
-          class="icons-row__actions"
-          {{ block.shopify_attributes }}
+        <div class="icons-row__actions" {{ block.shopify_attributes }}
           {% if animations_enabled %}
             data-aos="fade-up"
             data-aos-anchor="{{ animation_anchor }}"
             data-aos-delay="{{ animation_delay }}"
-          {% endif %}
-        >
-          <a class="btn {{ button_style }} {{ button_size }} {{ button_color }}" href="{{ button_link }}">
-            {{- button_text -}}
-          </a>
+          {% endif %}>
+          <a class="btn {{ button_style }} {{ button_size }} {{ button_color }}" href="{{ button_link }}">{{ button_text }}</a>
         </div>
       {%- endif -%}
     </div>
@@ -211,17 +193,6 @@
       "type": "header",
       "content": "Layout"
     },
-      {
-     "type": "header",
-      "content": "Card"
-       },
-        {
-      "type": "checkbox",
-        "id": "card",
-        "label": "Card",
-        "info": "Use card for text",
-        "default": false
-      },
     {
       "type": "select",
       "id": "alignment",

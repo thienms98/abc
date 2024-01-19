@@ -2,7 +2,7 @@
 {%- liquid
   assign collection = collections[section.settings.collection] | default: false
   assign products = collection.products
-  assign heading = section.settings.title
+  assign heading =  section.settings.title
   assign heading_size = section.settings.heading_size | times: 0.01
   assign heading_size_mobile = heading_size
   assign text = section.settings.text
@@ -505,22 +505,7 @@
 </div>
 {%- endcapture -%}
 
-  {%- assign promos_array = promos_array
-    | append: promo_order
-    | append: '#promo_position#'
-    | append: promo_position
-    | append: '#promo_html#'
-    | append: current_promo
-    | append: '#block_id#'
-    | append: block_id
-    | append: '#promo_collection#'
-    | append: promo_collection
-    | append: '#promo_width#'
-    | append: current_promo_width
-    | append: '#promo_width_class#'
-    | append: promo_width_class
-    | append: '@@'
-  -%}
+  {%- assign promos_array = promos_array | append: promo_order | append: '#promo_position#' | append: promo_position | append: '#promo_html#' | append: current_promo | append: '#block_id#' | append: block_id | append: '#promo_collection#' | append: promo_collection | append: '#promo_width#' | append: current_promo_width | append: '#promo_width_class#' | append: promo_width_class | append: '@@' -%}
 {%- endfor -%}
 
 {%- assign promos_array = promos_array | split: '@@' | sort -%}
@@ -949,17 +934,14 @@
   class="{{ section_classes }}"
   data-section-id="{{ section.id }}"
   data-section-type="featured-collection"
-  data-columns="{{ columns }}"
->
+  data-columns="{{ columns }}">
   <div class="{{ section_width }}">
     {%- if is_split -%}
-      <div
-        class="featured-collection__inner{% if layout == 'split-right' %} featured-collection__inner--splitright{% endif %}"
-      >
+      <div class="featured-collection__inner{% if layout == 'split-right' %} featured-collection__inner--splitright{% endif %}">
     {%- endif -%}
 
-    {{ section_heading }}
-    {{ collection_container }}
+      {{ section_heading }}
+      {{ collection_container }}
 
     {%- if is_split -%}
       </div>
@@ -1139,8 +1121,7 @@
       "default": "wrapper--full-padded",
       "options": [
         { "value": "wrapper", "label": "Page width" },
-        { "value": "wrapper--full-padded", "label": "Full width padded" },
-        { "value": "mosaic__wrapper wrapper wrapper--no-full", "label": "No Full" }
+        { "value": "wrapper--full-padded", "label": "Full width padded" }
       ]
     },
     {

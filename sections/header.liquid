@@ -125,89 +125,89 @@
       data-aos-delay="{{ animation_delay }}"
     {% endif %}
     data-wrapper>{%- if logo or logo_not_home -%}
-  {%- liquid
-    assign retina_size = logo_width | times: 2
-    assign image_widths = '50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500'
-  -%}
+        {%- liquid
+          assign retina_size = logo_width | times: 2
+          assign image_widths = '50, 60, 70, 80, 90, 100, 110, 120, 130, 140, 150, 160, 170, 180, 200, 220, 240, 260, 280, 300, 320, 340, 360, 380, 400, 420, 440, 460, 480, 500'
+        -%}
+    
+        {%- style -%}
+          .logo__image-link { height: {{ logo_height | round | append: 'px' }}; }
+      
+          .logo__image-link,
+          .drawer__logo-image { width: {{ logo_width | append: 'px' }}; }
+      
+          .has-scrolled .logo__image-link {
+            width: {{ logo_height_scrolled | times: logo_aspect_ratio | round | append: 'px' }};
+            height: {{ logo_height_scrolled | round | append: 'px' }};
+          }
+        {%- endstyle -%}
+    {%- endif -%}
 
-  {%- style -%}
-    .logo__image-link { height: {{ logo_height | round | append: 'px' }}; }
+    {%- capture logo_not_home_markup -%}
+      {%- if logo_not_home != blank -%}
+        {%- liquid
+          assign logo_padding_top = 1 | divided_by: logo_not_home.aspect_ratio | times: 100 | round: 1
+          assign image_alt = logo_not_home.alt | escape
+        -%}
+    
+        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}" class="logo__image-link logo__image-link--other{% unless logo %} logo__image-link--single{% endunless %}">
+          {%- render 'image',
+            image: logo_not_home,
+            width: retina_size,
+            widths: image_widths,
+            alt: image_alt,
+            sizes: 'auto',
+            classes: 'logo__image' -%}
+    
+          <span class="logo__image-push" style="padding-top: {{ logo_padding_top }}%"></span>
+        </a>
+      {%- endif -%}
+    {%- endcapture -%}
 
-    .logo__image-link,
-    .drawer__logo-image { width: {{ logo_width | append: 'px' }}; }
+    {%- capture logo_markup -%}
+      {%- if logo != blank -%}
+        {%- liquid
+          assign logo_padding_top = 1 | divided_by: logo.aspect_ratio | times: 100 | round: 1
+          assign image_alt = logo.alt | escape
+        -%}
+    
+        <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}" class="logo__image-link logo__image-link--home{% unless logo_not_home %} logo__image-link--single{% endunless %}">
+          {%- render 'image',
+            image: logo,
+            width: retina_size,
+            widths: image_widths,
+            alt: image_alt,
+            sizes: 'auto',
+            classes: 'logo__image' -%}
+    
+          <span class="logo__image-push" style="padding-top: {{ logo_padding_top }}%"></span>
+        </a>
+      {%- endif -%}
+    {%- endcapture -%}
 
-    .has-scrolled .logo__image-link {
-      width: {{ logo_height_scrolled | times: logo_aspect_ratio | round | append: 'px' }};
-      height: {{ logo_height_scrolled | round | append: 'px' }};
-    }
-  {%- endstyle -%}
-{%- endif -%}
-
-{%- capture logo_not_home_markup -%}
-  {%- if logo_not_home != blank -%}
-    {%- liquid
-      assign logo_padding_top = 1 | divided_by: logo_not_home.aspect_ratio | times: 100 | round: 1
-      assign image_alt = logo_not_home.alt | escape
-    -%}
-
-    <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}" class="logo__image-link logo__image-link--other{% unless logo %} logo__image-link--single{% endunless %}">
-      {%- render 'image',
-        image: logo_not_home,
-        width: retina_size,
-        widths: image_widths,
-        alt: image_alt,
-        sizes: 'auto',
-        classes: 'logo__image' -%}
-
-      <span class="logo__image-push" style="padding-top: {{ logo_padding_top }}%"></span>
-    </a>
-  {%- endif -%}
-{%- endcapture -%}
-
-{%- capture logo_markup -%}
-  {%- if logo != blank -%}
-    {%- liquid
-      assign logo_padding_top = 1 | divided_by: logo.aspect_ratio | times: 100 | round: 1
-      assign image_alt = logo.alt | escape
-    -%}
-
-    <a href="{{ routes.root_url }}" aria-label="{{ shop.name }}" class="logo__image-link logo__image-link--home{% unless logo_not_home %} logo__image-link--single{% endunless %}">
-      {%- render 'image',
-        image: logo,
-        width: retina_size,
-        widths: image_widths,
-        alt: image_alt,
-        sizes: 'auto',
-        classes: 'logo__image' -%}
-
-      <span class="logo__image-push" style="padding-top: {{ logo_padding_top }}%"></span>
-    </a>
-  {%- endif -%}
-{%- endcapture -%}
-
-<h1 class="logo" data-logo data-takes-space>
-  {%- if logo_not_home_markup != blank or logo_markup != blank -%}
-    {{- logo_not_home_markup -}}
-    {{- logo_markup -}}
-  {%- else -%}
-    <a href="{{ routes.root_url }}" class="logo__text-link" data-logo-text-link>{{ shop.name }}</a>
-  {%- endif -%}
-</h1><!-- /partials/site-nav.liquid -->
-{%- assign highlight_item_color = section.settings.highlight_item_color -%}
-{%- capture style -%}
-  {%- if highlight_item_color != 'rgba(0,0,0,0)' and highlight_item_color != '' -%}
-    style="--highlight: {{ highlight_item_color }};"
-  {%- endif -%}
-{%- endcapture -%}
-
-{%- capture cart_icon -%}
-  {%- case settings.cart_icon -%}
-    {%- when 'bag' -%}
-      {%- render 'icon-shopping-bag' -%}
-    {%- when 'shopping_cart' -%}
-      {%- render 'icon-shopping-cart' -%}
-  {%- endcase -%}
-{%- endcapture -%}
+      <h1 class="logo" data-logo data-takes-space>
+        {%- if logo_not_home_markup != blank or logo_markup != blank -%}
+          {{- logo_not_home_markup -}}
+          {{- logo_markup -}}
+        {%- else -%}
+          <a href="{{ routes.root_url }}" class="logo__text-link" data-logo-text-link>{{ shop.name }}</a>
+        {%- endif -%}
+      </h1><!-- /partials/site-nav.liquid -->
+      {%- assign highlight_item_color = section.settings.highlight_item_color -%}
+      {%- capture style -%}
+        {%- if highlight_item_color != 'rgba(0,0,0,0)' and highlight_item_color != '' -%}
+          style="--highlight: {{ highlight_item_color }};"
+        {%- endif -%}
+      {%- endcapture -%}
+      
+      {%- capture cart_icon -%}
+        {%- case settings.cart_icon -%}
+          {%- when 'bag' -%}
+            {%- render 'icon-shopping-bag' -%}
+          {%- when 'shopping_cart' -%}
+            {%- render 'icon-shopping-cart' -%}
+        {%- endcase -%}
+      {%- endcapture -%}
 
 <nav id="NavStandard" class="nav nav--default nav--weight-{{ settings.nav_font_weight }}{% if settings.nav_caps %} caps{% endif %}" data-nav {{ style }}>
   <div class="menu__item menu__item--compress" data-nav-items-compress>
@@ -231,19 +231,9 @@
       {%- render 'nav-item', link: link, section: section, index: forloop.index, highlight_item: highlight_item -%}
     {%- endfor -%}
   </div>
-
   <div class="menu__item menu__item--icons" data-nav-icons data-takes-space>
     {%- if settings.show_header_search -%}
       {%- render 'search-popdown', unique: 'desktop', in_header: true, classes: 'menu__item menu__item--icon', summary_classes: 'navlink navlink--icon' -%}
-    {%- endif -%}
-
-    {%- if shop.customer_accounts_enabled -%}
-      <div class="menu__item menu__item--icon">
-        <a href="{{ routes.account_url }}" class="navlink navlink--icon">
-          <span class="visually-hidden">{{ 'general.accessibility.my_account' | t }}</span>
-          {%- render 'icon-user' -%}
-        </a>
-      </div>
     {%- endif -%}
 
     <div class="menu__item menu__item--icon">
@@ -252,6 +242,14 @@
         {{ cart_icon }}
       </a>
     </div>
+    <!-- {%- if shop.customer_accounts_enabled -%} -->
+    <div class="menu__item menu__item--icon">
+        <a href="{{ routes.account_url }}" class="navlink navlink--icon">
+          <span class="visually-hidden">{{ 'general.accessibility.my_account' | t }}</span>
+          {%- render 'icon-user' -%}
+        </a>
+      </div>
+    <!-- {%- endif -%} -->
   </div>
 </nav>
 
